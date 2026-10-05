@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0b0d14">
+<title>Roblox Friend Analyzer</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell">
+
+  <header class="top">
+    <div class="brand">
+      <span class="eyebrow">Public data only</span>
+      <h1>Roblox Friend Analyzer</h1>
+      <p class="lede">Ranks a user's public friends by account age, followers and estimated equipped-avatar value. No login, cookies or tokens are ever requested.</p>
+    </div>
+    <form id="lookup" class="lookup" autocomplete="off">
+      <label for="userId" class="sr">Roblox User ID</label>
+      <input id="userId" name="userId" inputmode="numeric" pattern="[0-9]*" placeholder="Roblox User ID" aria-describedby="idHint">
+      <button id="analyzeBtn" type="submit" class="btn primary">Analyze</button>
+      <button id="cancelBtn" type="button" class="btn" hidden>Cancel</button>
+      <span id="idHint" class="hint">Default: DrRobuxic (2968372123). User IDs, not usernames.</span>
+    </form>
+  </header>
+
+  <section id="fatal" class="panel fatal" hidden aria-live="polite"></section>
+  <section id="notices" class="notices" aria-live="polite"></section>
+
+  <section id="progress" class="panel progress" hidden aria-label="Progress"></section>
+
+  <section id="profileCard" class="panel profile" hidden></section>
+
+  <section id="stats" class="stats" hidden aria-label="Summary"></section>
+
+  <section id="results" class="panel results" hidden>
+    <div class="results-head">
+      <div>
+        <h2>Friends</h2>
+        <p id="countLine" class="muted"></p>
+      </div>
+      <div class="controls">
+        <label for="search" class="sr">Search friends</label>
+        <input id="search" type="search" placeholder="Search username, display name or ID" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="boards" role="group" aria-label="Leaderboards">
+      <div id="chips" class="chips"></div>
+      <button id="dirBtn" type="button" class="btn small" aria-label="Toggle sort direction">Descending</button>
+    </div>
+
+    <div class="table-wrap">
+      <table id="table">
+        <thead>
+          <tr>
+            <th class="rank">#</th>
+            <th data-sort="displayName" scope="col">Friend</th>
+            <th data-sort="id" class="hide-sm" scope="col">User ID</th>
+            <th data-sort="online" class="hide-sm" scope="col">Status</th>
+            <th data-sort="created" class="hide-sm" scope="col">Created</th>
+            <th data-sort="created" class="hide-sm" scope="col">Age</th>
+            <th data-sort="followers" class="num" scope="col">Followers</th>
+            <th data-sort="avatarValue" class="num" scope="col">Avatar value<span class="est">est.</span></th>
+            <th data-sort="items" class="num hide-sm" scope="col">Items</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div id="emptyState" class="empty" hidden></div>
+    <div class="more"><button id="moreBtn" type="button" class="btn" hidden>Show more</button></div>
+    <p class="footnote">Avatar value is the estimated current Robux price of the items a friend has equipped right now. It is not inventory wealth and says nothing about how many Robux someone owns. Items without a public price are shown as Unavailable and left out of the total.</p>
+  </section>
+
+  <section class="panel api" id="apiPanel">
+    <div class="api-head">
+      <h2>Connection</h2>
+      <div class="api-actions">
+        <button id="checkBtn" type="button" class="btn small">Check connection</button>
+        <button id="retryBtn" type="button" class="btn small" hidden>Retry failed</button>
+        <button id="clearCacheBtn" type="button" class="btn small">Clear cache</button>
+      </div>
+    </div>
+    <ul id="hosts" class="hosts"></ul>
+
+    <details id="settings" class="settings">
+      <summary>Proxy settings (optional)</summary>
+      <p class="muted">Roblox may block requests from other websites (CORS). If a host above says it is blocked, deploy the small Cloudflare Worker from <code>worker.js</code> and paste its address here. It only forwards public read-only requests. Credentials are never sent.</p>
+      <form id="workerForm" class="worker-form">
+        <label for="workerUrl" class="sr">Worker URL</label>
+        <input id="workerUrl" type="url" placeholder="https://your-worker.your-name.workers.dev">
+        <button type="submit" class="btn small primary">Save</button>
+        <button id="workerClear" type="button" class="btn small">Remove</button>
+      </form>
+    </details>
+  </section>
+
+  <footer class="foot">Unofficial tool, not affiliated with Roblox. Uses only public Roblox web APIs. See the README for every endpoint used.</footer>
+</div>
+
+<div id="modal" class="modal" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+    <button class="modal-x" type="button" data-close aria-label="Close">&times;</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div id="toasts" class="toasts" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
